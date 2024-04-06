@@ -5,7 +5,7 @@ import 'package:practice1/service/counter/CountEntity.dart';
 abstract class CounterRepository {
   //
   //
-  CountEntity getCurrent();
+  Future<CountEntity> getCurrent();
 
   //
   //

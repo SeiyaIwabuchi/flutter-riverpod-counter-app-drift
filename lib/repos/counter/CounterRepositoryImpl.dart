@@ -1,20 +1,19 @@
-import 'package:flutter/cupertino.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:practice1/repos/counter/CounterDAO.dart';
 import 'package:practice1/service/counter/CountEntity.dart';
 import 'package:practice1/service/counter/CounterRepository.dart';
 
 class CounterRepositoryImpl implements CounterRepository {
 
-  static int _current = 0;
-  
+  final CounterDAO _counterDAO = CounterDAO.getInstance();
+
   @override
-  CountEntity getCurrent() {
-    return CountEntity(_current);
+  Future<CountEntity> getCurrent() async {
+    return await _counterDAO.getCurrent();
   }
 
   @override
   void save(CountEntity entity) {
-    _current = entity.count;
+    _counterDAO.save(entity);
   }
   
 }

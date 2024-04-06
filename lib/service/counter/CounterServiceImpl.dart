@@ -13,9 +13,9 @@ class CounterServiceImpl implements CounterService {
   //
   //
   @override
-  CountEntity decrement() {
+  Future<CountEntity> decrement() async {
 
-    final CountEntity current = _counterRepository.getCurrent();
+    final CountEntity current = await _counterRepository.getCurrent();
     
     _counterRepository.save(current.copy(current.count - 1));
 
@@ -25,22 +25,28 @@ class CounterServiceImpl implements CounterService {
   //
   //
   @override
-  CountEntity increment() {
+  Future<CountEntity> increment() async {
 
-    final CountEntity current = _counterRepository.getCurrent();
+    final CountEntity current = await _counterRepository.getCurrent();
 
     _counterRepository.save(current.copy(current.count + 1));
 
-    return _counterRepository.getCurrent();
+    return await _counterRepository.getCurrent();
   }
 
   //
   //
   @override
-  CountEntity reset() {
+  Future<CountEntity> reset() async {
     
     _counterRepository.save(CountEntity(0));
 
-    return _counterRepository.getCurrent();
+    return await _counterRepository.getCurrent();
+  }
+
+  //
+  @override
+  Future<CountEntity> getCurrent() async {
+    return await _counterRepository.getCurrent();
   }
 }
