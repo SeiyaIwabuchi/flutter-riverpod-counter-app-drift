@@ -6,6 +6,8 @@ import 'package:practice1/providers/AdapterPrv.dart';
 import 'adapters/counter/Adapter.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+
   runApp(const ProviderScope(
       child: MaterialApp(
     home: MyApp(),
@@ -17,12 +19,10 @@ class MyApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+
     //
     final int count = ref.watch(CounterState.notifierProvider).count;
     final Adapter adapter = ref.read(AdapterProvider.counterAdapterPrv);
-
-    // 初期化処理
-    adapter.loadInitState();
 
     //
     return Scaffold(

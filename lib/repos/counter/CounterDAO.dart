@@ -1,16 +1,10 @@
+import 'package:drift/drift.dart';
+import 'package:flutter/material.dart';
 
-import '../../commons/shared_preferences_wrapper.dart';
+import '../../database/database.dart';
 import '../../service/counter/CountEntity.dart';
 
-// ----
-//
-
-enum PrefKeys {
-  counter
-}
-
 class CounterDAO {
-
   // ---
   //
 
@@ -21,24 +15,26 @@ class CounterDAO {
     return _counterDAO!;
   }
 
-  late final SharedPreferencesWrapper _prefsw;
+  late final AppDatabase _appDatabase;
 
   CounterDAO() {
-    _prefsw = SharedPreferencesWrapper.getInstance();
+    _appDatabase = AppDatabase.getInstance();
   }
 
   // ----
   //
 
-  Future<CountEntity> getCurrent()  async {
-    final int current = await _prefsw.getIntOrNull(PrefKeys.counter) ?? 0;
-
+  Future<CountEntity> getCurrent() async {
+    print("getCurrentが呼ばれた！");
+    final int current =
+        (await (_appDatabase.counter.select()..limit(1)).getSingleOrNull())?.current ?? 0;
     return CountEntity(current);
   }
 
   //
   //
   void save(CountEntity entity) {
-    _prefsw.setInt(PrefKeys.counter, entity.count);
+    print("saveが呼ばれた！");
+    _appDatabase.counter.update().write(CounterCompanion(current: Value(entity.count)));
   }
 }

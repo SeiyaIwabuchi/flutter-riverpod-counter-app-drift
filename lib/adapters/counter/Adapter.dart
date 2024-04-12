@@ -7,7 +7,9 @@ class Adapter {
 
   final CounterNotifier _counterNotifier;
 
-  Adapter(this._counterService, this._counterNotifier);
+  Adapter(this._counterService, this._counterNotifier) {
+    loadInitState();
+  }
 
   // ----
 
