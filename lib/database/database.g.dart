@@ -3,34 +3,65 @@
 part of 'database.dart';
 
 // ignore_for_file: type=lint
-class $CounterTable extends Counter with TableInfo<$CounterTable, CounterData> {
+class $NoteTable extends Note with TableInfo<$NoteTable, NoteData> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $CounterTable(this.attachedDatabase, [this._alias]);
-  static const VerificationMeta _currentMeta =
-      const VerificationMeta('current');
+  $NoteTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
-  late final GeneratedColumn<int> current = GeneratedColumn<int>(
-      'current', aliasedName, false,
-      type: DriftSqlType.int, requiredDuringInsert: true);
+  late final GeneratedColumn<BigInt> id = GeneratedColumn<BigInt>(
+      'id', aliasedName, false,
+      type: DriftSqlType.bigInt, requiredDuringInsert: true);
+  static const VerificationMeta _ownerMeta = const VerificationMeta('owner');
   @override
-  List<GeneratedColumn> get $columns => [current];
+  late final GeneratedColumn<String> owner = GeneratedColumn<String>(
+      'owner', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _titleMeta = const VerificationMeta('title');
+  @override
+  late final GeneratedColumn<String> title = GeneratedColumn<String>(
+      'title', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _bodyMeta = const VerificationMeta('body');
+  @override
+  late final GeneratedColumn<String> body = GeneratedColumn<String>(
+      'body', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  @override
+  List<GeneratedColumn> get $columns => [id, owner, title, body];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
   String get actualTableName => $name;
-  static const String $name = 'counter';
+  static const String $name = 'note';
   @override
-  VerificationContext validateIntegrity(Insertable<CounterData> instance,
+  VerificationContext validateIntegrity(Insertable<NoteData> instance,
       {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
-    if (data.containsKey('current')) {
-      context.handle(_currentMeta,
-          current.isAcceptableOrUnknown(data['current']!, _currentMeta));
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
     } else if (isInserting) {
-      context.missing(_currentMeta);
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('owner')) {
+      context.handle(
+          _ownerMeta, owner.isAcceptableOrUnknown(data['owner']!, _ownerMeta));
+    } else if (isInserting) {
+      context.missing(_ownerMeta);
+    }
+    if (data.containsKey('title')) {
+      context.handle(
+          _titleMeta, title.isAcceptableOrUnknown(data['title']!, _titleMeta));
+    } else if (isInserting) {
+      context.missing(_titleMeta);
+    }
+    if (data.containsKey('body')) {
+      context.handle(
+          _bodyMeta, body.isAcceptableOrUnknown(data['body']!, _bodyMeta));
+    } else if (isInserting) {
+      context.missing(_bodyMeta);
     }
     return context;
   }
@@ -38,94 +69,156 @@ class $CounterTable extends Counter with TableInfo<$CounterTable, CounterData> {
   @override
   Set<GeneratedColumn> get $primaryKey => const {};
   @override
-  CounterData map(Map<String, dynamic> data, {String? tablePrefix}) {
+  NoteData map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return CounterData(
-      current: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}current'])!,
+    return NoteData(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.bigInt, data['${effectivePrefix}id'])!,
+      owner: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}owner'])!,
+      title: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}title'])!,
+      body: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}body'])!,
     );
   }
 
   @override
-  $CounterTable createAlias(String alias) {
-    return $CounterTable(attachedDatabase, alias);
+  $NoteTable createAlias(String alias) {
+    return $NoteTable(attachedDatabase, alias);
   }
 }
 
-class CounterData extends DataClass implements Insertable<CounterData> {
-  final int current;
-  const CounterData({required this.current});
+class NoteData extends DataClass implements Insertable<NoteData> {
+  final BigInt id;
+  final String owner;
+  final String title;
+  final String body;
+  const NoteData(
+      {required this.id,
+      required this.owner,
+      required this.title,
+      required this.body});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
-    map['current'] = Variable<int>(current);
+    map['id'] = Variable<BigInt>(id);
+    map['owner'] = Variable<String>(owner);
+    map['title'] = Variable<String>(title);
+    map['body'] = Variable<String>(body);
     return map;
   }
 
-  CounterCompanion toCompanion(bool nullToAbsent) {
-    return CounterCompanion(
-      current: Value(current),
+  NoteCompanion toCompanion(bool nullToAbsent) {
+    return NoteCompanion(
+      id: Value(id),
+      owner: Value(owner),
+      title: Value(title),
+      body: Value(body),
     );
   }
 
-  factory CounterData.fromJson(Map<String, dynamic> json,
+  factory NoteData.fromJson(Map<String, dynamic> json,
       {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return CounterData(
-      current: serializer.fromJson<int>(json['current']),
+    return NoteData(
+      id: serializer.fromJson<BigInt>(json['id']),
+      owner: serializer.fromJson<String>(json['owner']),
+      title: serializer.fromJson<String>(json['title']),
+      body: serializer.fromJson<String>(json['body']),
     );
   }
   @override
   Map<String, dynamic> toJson({ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
-      'current': serializer.toJson<int>(current),
+      'id': serializer.toJson<BigInt>(id),
+      'owner': serializer.toJson<String>(owner),
+      'title': serializer.toJson<String>(title),
+      'body': serializer.toJson<String>(body),
     };
   }
 
-  CounterData copyWith({int? current}) => CounterData(
-        current: current ?? this.current,
+  NoteData copyWith({BigInt? id, String? owner, String? title, String? body}) =>
+      NoteData(
+        id: id ?? this.id,
+        owner: owner ?? this.owner,
+        title: title ?? this.title,
+        body: body ?? this.body,
       );
   @override
   String toString() {
-    return (StringBuffer('CounterData(')
-          ..write('current: $current')
+    return (StringBuffer('NoteData(')
+          ..write('id: $id, ')
+          ..write('owner: $owner, ')
+          ..write('title: $title, ')
+          ..write('body: $body')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => current.hashCode;
+  int get hashCode => Object.hash(id, owner, title, body);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is CounterData && other.current == this.current);
+      (other is NoteData &&
+          other.id == this.id &&
+          other.owner == this.owner &&
+          other.title == this.title &&
+          other.body == this.body);
 }
 
-class CounterCompanion extends UpdateCompanion<CounterData> {
-  final Value<int> current;
+class NoteCompanion extends UpdateCompanion<NoteData> {
+  final Value<BigInt> id;
+  final Value<String> owner;
+  final Value<String> title;
+  final Value<String> body;
   final Value<int> rowid;
-  const CounterCompanion({
-    this.current = const Value.absent(),
+  const NoteCompanion({
+    this.id = const Value.absent(),
+    this.owner = const Value.absent(),
+    this.title = const Value.absent(),
+    this.body = const Value.absent(),
     this.rowid = const Value.absent(),
   });
-  CounterCompanion.insert({
-    required int current,
+  NoteCompanion.insert({
+    required BigInt id,
+    required String owner,
+    required String title,
+    required String body,
     this.rowid = const Value.absent(),
-  }) : current = Value(current);
-  static Insertable<CounterData> custom({
-    Expression<int>? current,
+  })  : id = Value(id),
+        owner = Value(owner),
+        title = Value(title),
+        body = Value(body);
+  static Insertable<NoteData> custom({
+    Expression<BigInt>? id,
+    Expression<String>? owner,
+    Expression<String>? title,
+    Expression<String>? body,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
-      if (current != null) 'current': current,
+      if (id != null) 'id': id,
+      if (owner != null) 'owner': owner,
+      if (title != null) 'title': title,
+      if (body != null) 'body': body,
       if (rowid != null) 'rowid': rowid,
     });
   }
 
-  CounterCompanion copyWith({Value<int>? current, Value<int>? rowid}) {
-    return CounterCompanion(
-      current: current ?? this.current,
+  NoteCompanion copyWith(
+      {Value<BigInt>? id,
+      Value<String>? owner,
+      Value<String>? title,
+      Value<String>? body,
+      Value<int>? rowid}) {
+    return NoteCompanion(
+      id: id ?? this.id,
+      owner: owner ?? this.owner,
+      title: title ?? this.title,
+      body: body ?? this.body,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -133,8 +226,17 @@ class CounterCompanion extends UpdateCompanion<CounterData> {
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
-    if (current.present) {
-      map['current'] = Variable<int>(current.value);
+    if (id.present) {
+      map['id'] = Variable<BigInt>(id.value);
+    }
+    if (owner.present) {
+      map['owner'] = Variable<String>(owner.value);
+    }
+    if (title.present) {
+      map['title'] = Variable<String>(title.value);
+    }
+    if (body.present) {
+      map['body'] = Variable<String>(body.value);
     }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
@@ -144,8 +246,11 @@ class CounterCompanion extends UpdateCompanion<CounterData> {
 
   @override
   String toString() {
-    return (StringBuffer('CounterCompanion(')
-          ..write('current: $current, ')
+    return (StringBuffer('NoteCompanion(')
+          ..write('id: $id, ')
+          ..write('owner: $owner, ')
+          ..write('title: $title, ')
+          ..write('body: $body, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -154,11 +259,10 @@ class CounterCompanion extends UpdateCompanion<CounterData> {
 
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
-  _$AppDatabase.connect(DatabaseConnection c) : super.connect(c);
-  late final $CounterTable counter = $CounterTable(this);
+  late final $NoteTable note = $NoteTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
-  List<DatabaseSchemaEntity> get allSchemaEntities => [counter];
+  List<DatabaseSchemaEntity> get allSchemaEntities => [note];
 }

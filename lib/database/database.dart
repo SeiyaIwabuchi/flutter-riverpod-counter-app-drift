@@ -9,11 +9,14 @@ import 'package:practice1/platform/database/ConnectionOpenerImpl.dart';
 part 'database.g.dart';
 
 //テーブル定義とORMの設定
-class Counter extends Table {
-  IntColumn get current => integer()();
+class Note extends Table {
+  Int64Column get id => int64()();
+  TextColumn get owner => text()();
+  TextColumn get title => text()();
+  TextColumn get body => text()();
 }
 
-@DriftDatabase(tables: [Counter])
+@DriftDatabase(tables: [Note])
 class AppDatabase extends _$AppDatabase {
   AppDatabase._(): super(ConnectionOpenerImpl().openConnection());
 
@@ -35,13 +38,8 @@ class AppDatabase extends _$AppDatabase {
   }
 
   static void initDb() async {
-    AppDatabase db = _appDatabase!;
+    // 初期データなど
 
-    print("既存データ：${await db.counter.select().get()}");
-    if (await db.counter.count().getSingle() == 0) {
-      print("初期データ投入！");
-      await db.into(db.counter)
-          .insert(CounterCompanion.insert(current: 0));
-    }
+    AppDatabase db = _appDatabase!;
   }
 }

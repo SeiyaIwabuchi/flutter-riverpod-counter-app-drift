@@ -4,37 +4,45 @@ import 'package:flutter/material.dart';
 import '../../database/database.dart';
 import '../../service/counter/CountEntity.dart';
 
-class CounterDAO {
+class NoteDAO {
   // ---
   //
 
-  static CounterDAO? _counterDAO;
+  static NoteDAO? _noteDAO;
 
-  static CounterDAO getInstance() {
-    _counterDAO ??= CounterDAO();
-    return _counterDAO!;
+  static NoteDAO getInstance() {
+    _noteDAO ??= NoteDAO();
+    return _noteDAO!;
   }
 
   late final AppDatabase _appDatabase;
 
-  CounterDAO() {
+  NoteDAO() {
     _appDatabase = AppDatabase.getInstance();
   }
 
   // ----
   //
 
-  Future<CountEntity> getCurrent() async {
-    print("getCurrentが呼ばれた！");
-    final int current =
-        (await (_appDatabase.counter.select()..limit(1)).getSingleOrNull())?.current ?? 0;
-    return CountEntity(current);
+  Future<NoteEntity?> findById({required int id}) async {
+    final NoteData? note = await (_appDatabase.note.select()
+          ..where((row) => row.id.equals(BigInt.from(id))))
+        .getSingleOrNull();
+
+    if (note != null) {
+      return NoteEntity(
+          id: note.id, owner: note.owner, title: note.title, body: note.body);
+    }
+    return null;
   }
 
   //
   //
-  void save(CountEntity entity) {
-    print("saveが呼ばれた！");
-    _appDatabase.counter.update().write(CounterCompanion(current: Value(entity.count)));
+  void save(NoteEntity entity) {
+    _appDatabase.note.update().write(NoteCompanion(
+        id: Value(entity.id),
+        owner: Value(entity.owner),
+        title: Value(entity.title),
+        body: Value(entity.body)));
   }
 }

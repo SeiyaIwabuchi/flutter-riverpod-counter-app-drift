@@ -1,19 +1,15 @@
-class CountEntity {
+class NoteEntity {
 
-  final int _count;
+  final BigInt id;
+  final String owner;
+  final String title;
+  final String body;
 
-
-  CountEntity(this._count);
-
-  //
-  // getters
-
-  int get count => _count;
-
+  NoteEntity({required this.id,required this.owner, required this.title, required this.body});
 
   // copy method
 
-  CountEntity copy([int? count]) {
-    return CountEntity(count ?? _count);
+  NoteEntity copy([BigInt? id, String? owner, String? title, String? body]) {
+    return NoteEntity(id: id??this.id, owner: owner??this.owner, title: title??this.title, body: body??this.body);
   }
 }
